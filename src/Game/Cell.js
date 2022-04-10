@@ -2,24 +2,27 @@ import React, { useContext } from "react";
 import { GameContext } from "../Context";
 import { CellStyle, CellContent } from "../StyledComponents";
 
-const Cell = ({ number, opponentTurn }) => {
-  const { allCells, turn, setTurn, setAllCells, setEmptyCells } =
-    useContext(GameContext);
+const Cell = ({
+  number = 0,
+  opponentTurn = (f) => f,
+  myTurn = (f) => f,
+  checkEndGame = (f) => f,
+}) => {
+  const { allCells, setTurn, setEmptyCells } = useContext(GameContext);
 
   const handleClick = async () => {
     if (allCells[number]) {
       return;
     }
-    const newCells = [
-      ...allCells.map((item, index) => {
-        if (index === number) {
-          return turn === "x" ? "x" : "0";
-        } else return item;
-      }),
-    ];
-    setAllCells(newCells);
-    setTurn(turn === "x" ? "0" : "x");
-    await opponentTurn(newCells);
+    const myTurnAftermath = await myTurn(number);
+    setTurn("0");
+    if (checkEndGame()) {
+      return;
+    }
+    await opponentTurn(myTurnAftermath);
+    if (checkEndGame()) {
+      return;
+    }
     const empty = [];
     allCells.forEach((item, index) => {
       if (item === "") {

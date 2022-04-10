@@ -26,10 +26,12 @@ const Table = () => {
         allCells[combo[0]] === allCells[combo[1]] &&
         allCells[combo[1]] === allCells[combo[2]]
       ) {
-        setGameOver({ mode: true, winner: turn === "x" ? "0" : "x" });
+        setGameOver({ mode: true, winner: turn === "x" ? "x" : "0" });
+        return true;
       }
       if (allCells.filter((item) => item).length === allCells.length) {
         setGameOver({ mode: true, winner: "draw" });
+        return true;
       }
     });
   };
@@ -38,19 +40,48 @@ const Table = () => {
     checkEndGame();
   }, [allCells]);
 
+  const myTurn = (number) => {
+    return new Promise((resolve) => {
+      const newCells = [
+        ...allCells.map((item, index) => {
+          if (index === number) {
+            return turn === "x" ? "x" : "0";
+          } else return item;
+        }),
+      ];
+      setAllCells(newCells);
+      resolve(newCells);
+    });
+  };
+
   const opponentTurn = (cells) => {
     return new Promise((resolve) => {
-      setTimeout(() => {
+      setTimeout(async () => {
         const temp = [...cells];
-        for (let i = 0; i < temp.length; i++) {
-          if (!temp[i]) {
-            temp[i] = "0";
-            setAllCells(temp);
-            setTurn("x");
-            resolve();
-            return;
+        let emptyCellsIndices = [];
+        temp.forEach((item, index) => {
+          if (!item) {
+            emptyCellsIndices.push(index);
           }
+        });
+        console.log(emptyCellsIndices);
+        let randomNumber = Math.ceil(
+          Math.random() * emptyCellsIndices.length - 1
+        );
+        console.log(allCells[emptyCellsIndices[randomNumber]]);
+        temp[emptyCellsIndices[randomNumber]] = "0";
+        const promise = () =>
+          new Promise((resolve, reject) => {
+            setAllCells(temp);
+            resolve();
+          });
+        await promise();
+        if (checkEndGame()) {
+          return;
         }
+        setTurn("x");
+        resolve();
+        return;
       }, 500);
     });
   };
@@ -58,7 +89,15 @@ const Table = () => {
   return (
     <FieldContainer>
       {allCells.map((item, index) => {
-        return <Cell key={index} number={index} opponentTurn={opponentTurn} />;
+        return (
+          <Cell
+            key={index}
+            number={index}
+            opponentTurn={opponentTurn}
+            myTurn={myTurn}
+            checkEndGame={checkEndGame}
+          />
+        );
       })}
     </FieldContainer>
   );

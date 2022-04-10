@@ -9,7 +9,11 @@ const Ready = () => {
     modeContext.setGameIsOn(true);
   };
 
-  return <Button onClick={handleClick}>Start!</Button>;
+  return (
+    <div>
+      <Button onClick={handleClick}>Start!</Button>
+    </div>
+  );
 };
 
 export default Ready;

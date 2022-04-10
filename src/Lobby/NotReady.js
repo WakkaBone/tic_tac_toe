@@ -1,8 +1,14 @@
 import React from "react";
-import { Subheader } from "../StyledComponents";
+import { Loader, Subheader } from "../StyledComponents";
 
 const NotReady = () => {
-  return <Subheader>Waiting for another player to connect...</Subheader>;
+  return (
+    <div>
+      <Subheader>
+        Waiting for another player to connect... <Loader />
+      </Subheader>
+    </div>
+  );
 };
 
 export default NotReady;

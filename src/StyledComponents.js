@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 export const MainContainer = styled.div`
   background-color: whitesmoke;
@@ -61,6 +61,7 @@ export const CellStyle = styled.div`
 `;
 
 export const Button = styled.button`
+display: block;
   background-color: #2ea44f;
   border: 1px solid rgba(27, 31, 35, .15);
   border-radius: 6px;
@@ -96,4 +97,23 @@ export const GameStartContainer = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
+  flex-wrap: wrap;
+`;
+
+export const rotation = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+export const Loader = styled.div`
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 1px dashed black;
+  border-radius: 50%;
+  animation: ${rotation} 2s linear infinite;
 `;
